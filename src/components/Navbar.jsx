@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Menu, X, Search, BookOpen, LogIn, UserPlus, MessageCircle, BookText, Heart } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Menu, X, Search, BookOpen, LogIn, UserPlus, MessageCircle } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -7,6 +8,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="w-full px-6 py-6 md:px-12 flex justify-between items-center sticky top-0 bg-white/90 backdrop-blur-sm z-50 text-black">
+        
         {/* Tombol Menu Mobile */}
         <button
           className="md:hidden"
@@ -26,7 +28,6 @@ const Navbar = () => {
           <a href="#" className="hover:underline flex items-center gap-1">
             <BookOpen size={14} /> QUR’AN
           </a>
-
         </div>
 
         {/* Brand Name */}
@@ -39,12 +40,16 @@ const Navbar = () => {
           <a href="#" className="hover:underline flex items-center gap-1">
             <Search size={14} /> SEARCH
           </a>
-          <a href="#" className="hover:underline flex items-center gap-1">
+
+          {/* LOGIN */}
+          <Link to="/login" className="hover:underline flex items-center gap-1">
             <LogIn size={14} /> LOGIN
-          </a>
-          <a href="#" className="hover:underline flex items-center gap-1">
+          </Link>
+
+          {/* REGISTER */}
+          <Link to="/register" className="hover:underline flex items-center gap-1">
             <UserPlus size={14} /> REGISTER
-          </a>
+          </Link>
         </div>
 
         {/* Icon Mobile */}
@@ -56,16 +61,36 @@ const Navbar = () => {
       {/* Menu Mobile */}
       {isMenuOpen && (
         <div className="md:hidden fixed inset-0 bg-white z-40 pt-24 px-6 flex flex-col gap-6 text-lg font-bold">
-          {["DAKWAH Z", "ARTICLES", "QUR’AN", "HADIST", "DOA", "COMMUNITY", "LOGIN", "REGISTER"].map((item) => (
-            <a
-              key={item}
-              href="#"
-              onClick={() => setIsMenuOpen(false)}
-              className="hover:text-gray-600 transition-colors"
-            >
-              {item}
-            </a>
-          ))}
+          
+          <a href="#" onClick={() => setIsMenuOpen(false)} className="hover:text-gray-600">
+            DAKWAH Z
+          </a>
+
+          <a href="#" onClick={() => setIsMenuOpen(false)} className="hover:text-gray-600">
+            ARTICLES
+          </a>
+
+          <a href="#" onClick={() => setIsMenuOpen(false)} className="hover:text-gray-600">
+            QUR’AN
+          </a>
+
+          {/* LOGIN (mobile) */}
+          <Link
+            to="/login"
+            onClick={() => setIsMenuOpen(false)}
+            className="hover:text-gray-600"
+          >
+            LOGIN
+          </Link>
+
+          {/* REGISTER (mobile) */}
+          <Link
+            to="/register"
+            onClick={() => setIsMenuOpen(false)}
+            className="hover:text-gray-600"
+          >
+            REGISTER
+          </Link>
         </div>
       )}
     </>

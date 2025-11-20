@@ -2,6 +2,11 @@ import React from 'react';
 import { ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 
+// LOCAL ASSETS — NO ALIAS
+import imgHero1 from "../assets/images/img_landing_assets_hero_5.webp";
+import imgHero2 from "../assets/images/img_landing_assets_hero_2.webp";
+import imgHero3 from "../assets/images/img_landing_assets_hero_4.webp";
+
 const HeroSection = () => {
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -36,44 +41,42 @@ const HeroSection = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         
-        {/* --- LEFT COLUMN --- */}
+        {/* LEFT COLUMN */}
         <div className="lg:col-span-4 flex flex-col">
           <motion.div variants={itemVariants} className="aspect-[4/3] overflow-hidden mb-6">
             <img
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000&auto=format&fit=crop&grayscale"
+              src={imgHero1}
               alt="Detail Shot"
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-out"
             />
           </motion.div>
-          
-          {/* Text bawah kiri */}
+
           <motion.p variants={itemVariants} className="text-xs md:text-sm font-bold uppercase leading-relaxed tracking-wide max-w-xs">
             Stay grounded in faith and style — Khalif’s way of mindful living.
           </motion.p>
         </div>
 
-        {/* --- CENTER COLUMN --- */}
+        {/* CENTER */}
         <motion.div variants={itemVariants} className="lg:col-span-4">
           <div className="aspect-[3/4] lg:aspect-[2/3] overflow-hidden h-full">
             <img
-              src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=2000&auto=format&fit=crop&grayscale"
+              src={imgHero2}
               alt="Full Body Fashion"
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-out"
             />
           </div>
         </motion.div>
 
-        {/* --- RIGHT COLUMN --- */}
+        {/* RIGHT */}
         <div className="lg:col-span-4 flex flex-col lg:pt-32">
           <motion.div variants={itemVariants} className="aspect-[4/3] overflow-hidden mb-4">
             <img
-              src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?q=80&w=1000&auto=format&fit=crop&grayscale"
+              src={imgHero3}
               alt="Back view"
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-out"
             />
           </motion.div>
 
-          {/* Text bawah kanan */}
           <motion.p
             variants={itemVariants}
             className="text-xs md:text-sm font-bold uppercase leading-relaxed tracking-wide text-right ml-auto max-w-xs"
@@ -81,7 +84,6 @@ const HeroSection = () => {
             Discover stories of purpose, growth, and digital dakwah for Gen Z.
           </motion.p>
 
-          {/* Link */}
           <motion.div variants={itemVariants} className="flex justify-end mt-3">
             <a
               href="#"

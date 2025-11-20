@@ -1,77 +1,141 @@
-import React, { useEffect, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
 
 const SplashScreen = ({ onFinish }) => {
+  // Kita tidak perlu state opacity manual, biarkan GSAP yang handle
   const [isVisible, setIsVisible] = useState(true);
-  const [opacity, setOpacity] = useState(100);
 
-  useEffect(() => {
-    // Splash tampil 3 detik lalu fade out
-    const timer = setTimeout(() => setOpacity(0), 3000);
+  // Refs untuk elemen yang akan dianimasikan
+  const compRef = useRef(null); // Scope untuk GSAP context
+  const containerRef = useRef(null);
+  const titleRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const blob1Ref = useRef(null);
+  const blob2Ref = useRef(null);
+  const lineRef = useRef(null);
 
-    // Setelah animasi selesai → hapus dari DOM
-    const cleanup = setTimeout(() => {
-      setIsVisible(false);
-      if (onFinish) onFinish();
-    }, 3700);
+  useLayoutEffect(() => {
+    // Context safe untuk React 18+
+    let ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          // Hapus component dari DOM setelah animasi selesai
+          setIsVisible(false);
+          if (onFinish) onFinish();
+        },
+      });
 
-    return () => {
-      clearTimeout(timer);
-      clearTimeout(cleanup);
-    };
+      // 0. Setup Awal (Invisible state)
+      gsap.set([titleRef.current, subtitleRef.current, lineRef.current], { autoAlpha: 0 });
+
+      // 1. Ambient Blob Animation (Looping background)
+      gsap.to(blob1Ref.current, {
+        x: "20%", y: "-20%", duration: 4, repeat: -1, yoyo: true, ease: "sine.inOut"
+      });
+      gsap.to(blob2Ref.current, {
+        x: "-20%", y: "20%", duration: 5, repeat: -1, yoyo: true, ease: "sine.inOut"
+      });
+
+      // 2. Entrance Sequence
+      tl.to(containerRef.current, { opacity: 1, duration: 0.5 })
+        
+        // Animasi Judul: Naik ke atas sambil mengurangi skew (efek modern)
+        .fromTo(titleRef.current, 
+          { y: 100, skewY: 7, autoAlpha: 0 },
+          { y: 0, skewY: 0, autoAlpha: 1, duration: 1.2, ease: "power4.out" }
+        )
+        
+        // Garis separator melebar
+        .fromTo(lineRef.current,
+          { scaleX: 0, autoAlpha: 0 },
+          { scaleX: 1, autoAlpha: 1, duration: 0.8, ease: "expo.out" },
+          "-=0.8" // Mulai lebih awal (overlap)
+        )
+
+        // Subtitle muncul pelan
+        .fromTo(subtitleRef.current,
+          { y: 20, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.8, ease: "power2.out" },
+          "-=0.6"
+        )
+
+        // 3. Hold (Tahan sebentar agar user bisa baca)
+        .to({}, { duration: 1.5 }) 
+
+        // 4. EXIT Sequence (Transisi Keluar)
+        // Teks naik lebih cepat
+        .to([titleRef.current, subtitleRef.current, lineRef.current], {
+          y: -50, autoAlpha: 0, duration: 0.5, stagger: 0.1, ease: "power2.in"
+        })
+        // Container utama slide ke atas (seperti tirai dibuka)
+        .to(containerRef.current, {
+          yPercent: -100,
+          duration: 0.8,
+          ease: "power4.inOut",
+        });
+
+    }, compRef);
+
+    return () => ctx.revert(); // Cleanup GSAP
   }, [onFinish]);
 
   if (!isVisible) return null;
 
   return (
-    <div
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#2D5A50] transition-opacity duration-700 ease-in-out`}
-      style={{ opacity: opacity / 100 }}
-    >
-      {/* Background Logo */}
-      <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
-        <CloverIcon className="w-[120vw] h-[120vw] md:w-[50vw] md:h-[50vw] text-white opacity-[0.03]" />
-      </div>
-
-      {/* Center Content */}
-      <div className="relative z-10 flex flex-col items-center animate-pulse">
-        <CloverIcon className="w-20 h-20 text-white mb-4 drop-shadow-md" />
-        <h1 className="text-3xl md:text-4xl font-medium text-white tracking-wide font-sans">
-          Khalif
-        </h1>
-      </div>
-
-      {/* Bottom Leaves */}
-      <div className="absolute bottom-0 left-0 w-full h-48 md:h-64 flex justify-between items-end px-4 overflow-hidden pointer-events-none">
-        <div className="w-40 h-40 md:w-56 md:h-56 text-[#548C7E] transform -translate-x-10 translate-y-10">
-          <FernLeaf />
+    <div ref={compRef} className="relative z-[9999]">
+      <div
+        ref={containerRef}
+        className="fixed inset-0 flex flex-col items-center justify-center bg-slate-950 overflow-hidden"
+      >
+        {/* === BACKGROUND EFFECTS === */}
+        {/* Grid Pattern Overlay */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-soft-light pointer-events-none"></div>
+        
+        {/* Glowing Blobs */}
+        <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            <div 
+                ref={blob1Ref} 
+                className="absolute w-[500px] h-[500px] bg-blue-600/30 rounded-full blur-[100px] mix-blend-screen top-[-10%] right-[-10%]" 
+            />
+            <div 
+                ref={blob2Ref} 
+                className="absolute w-[400px] h-[400px] bg-purple-600/30 rounded-full blur-[80px] mix-blend-screen bottom-[-10%] left-[-10%]" 
+            />
         </div>
-        <div className="w-48 h-48 md:w-72 md:h-72 text-[#548C7E] transform translate-x-4 translate-y-4 rotate-[-10deg]">
-          <FernLeaf />
+
+        {/* === MAIN CONTENT === */}
+        <div className="relative z-10 flex flex-col items-center text-center px-4">
+          
+          {/* Brand Title */}
+          <div className="overflow-hidden py-2"> {/* Wrapper untuk clipping effect */}
+            <h1
+              ref={titleRef}
+              className="text-5xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 drop-shadow-lg"
+            >
+              Khalif Apps
+            </h1>
+          </div>
+
+          {/* Decorative Line */}
+          <div 
+            ref={lineRef}
+            className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full my-6"
+          />
+
+          {/* Tagline */}
+          <div className="overflow-hidden">
+            <p
+              ref={subtitleRef}
+              className="text-lg md:text-xl text-slate-400 font-medium tracking-widest uppercase"
+            >
+              Defining Gen Z Vibes
+            </p>
+          </div>
+          
         </div>
       </div>
     </div>
   );
 };
-
-const CloverIcon = ({ className }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M12 12C12 12 14.5 9.5 14.5 7C14.5 5.5 13.5 4.5 12 4.5C10.5 4.5 9.5 5.5 9.5 7C9.5 9.5 12 12 12 12ZM12 12C12 12 9.5 14.5 7 14.5C5.5 14.5 4.5 13.5 4.5 12C4.5 10.5 5.5 9.5 7 9.5C9.5 9.5 12 12 12 12ZM12 12C12 12 14.5 14.5 14.5 17C14.5 18.5 13.5 19.5 12 19.5C10.5 19.5 9.5 18.5 9.5 17C9.5 14.5 12 12 12 12ZM12 12C12 12 9.5 9.5 7 9.5C5.5 9.5 4.5 10.5 4.5 12C4.5 13.5 5.5 14.5 7 14.5C9.5 14.5 12 12 12 12Z" />
-  </svg>
-);
-
-const FernLeaf = () => (
-  <svg viewBox="0 0 100 100" fill="currentColor" className="w-full h-full">
-    <path d="M50 100 Q 50 50 80 10" stroke="currentColor" strokeWidth="2" fill="none" />
-    <ellipse cx="50" cy="90" rx="6" ry="3" transform="rotate(-20 50 90)" />
-    <ellipse cx="52" cy="80" rx="7" ry="3.5" transform="rotate(-25 52 80)" />
-    <ellipse cx="55" cy="70" rx="8" ry="4" transform="rotate(-30 55 70)" />
-    <ellipse cx="60" cy="60" rx="8" ry="4" transform="rotate(-35 60 60)" />
-    <ellipse cx="66" cy="50" rx="8" ry="4" transform="rotate(-40 66 50)" />
-    <ellipse cx="73" cy="40" rx="7" ry="3.5" transform="rotate(-45 73 40)" />
-    <ellipse cx="80" cy="30" rx="6" ry="3" transform="rotate(-50 80 30)" />
-    <ellipse cx="45" cy="85" rx="5" ry="2.5" transform="rotate(10 45 85)" />
-    <ellipse cx="48" cy="75" rx="6" ry="3" transform="rotate(5 48 75)" />
-  </svg>
-);
 
 export default SplashScreen;

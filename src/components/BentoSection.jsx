@@ -2,6 +2,11 @@ import React from 'react';
 import { ChevronRight, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
+// LOCAL ASSETS
+import bento1 from "../assets/images/img_landing_assets_bento_1.webp";
+import bento2 from "../assets/images/img_landing_assets_bento_2.webp";
+import bento3 from "../assets/images/img_landing_assets_bento_3.webp";
+
 const BentoSection = () => {
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -43,7 +48,7 @@ const BentoSection = () => {
         {/* LEFT SIDE */}
         <div className="flex flex-col gap-6 h-full">
 
-          {/* Top Card - Text Section */}
+          {/* Top Card */}
           <motion.div
             variants={cardVariants}
             className="bg-[#F8F8F8] dark:bg-neutral-900 rounded-[2.5rem] p-8 md:p-12 flex flex-col justify-between flex-grow min-h-[300px] hover:shadow-lg transition-all duration-300 group"
@@ -56,11 +61,11 @@ const BentoSection = () => {
             </p>
           </motion.div>
 
-          {/* Middle Row - Images */}
+          {/* Middle Row */}
           <div className="grid grid-cols-2 gap-6 h-64 md:h-72">
             <motion.div variants={cardVariants} className="relative rounded-[2rem] overflow-hidden group">
               <img
-                src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=1000&auto=format&fit=crop"
+                src={bento1}
                 alt="Faith & Chill"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
@@ -69,14 +74,14 @@ const BentoSection = () => {
 
             <motion.div variants={cardVariants} className="relative rounded-[2rem] overflow-hidden group">
               <img
-                src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1000&auto=format&fit=crop"
+                src={bento2}
                 alt="Peaceful Mind"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
             </motion.div>
           </div>
 
-          {/* Bottom Card - CTA */}
+          {/* Bottom CTA */}
           <motion.div
             variants={cardVariants}
             className="bg-[#E8E8E8] dark:bg-neutral-800 rounded-[2.5rem] p-8 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 hover:bg-[#E0E0E0] dark:hover:bg-neutral-700 transition-colors"
@@ -95,19 +100,19 @@ const BentoSection = () => {
           </motion.div>
         </div>
 
-        {/* RIGHT SIDE - Big Image */}
+        {/* RIGHT SIDE */}
         <motion.div
           variants={cardVariants}
           className="relative rounded-[2.5rem] overflow-hidden min-h-[600px] lg:h-full group"
         >
           <img
-            src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=1000&auto=format&fit=crop"
+            src={bento3}
             alt="Khalif Vibes"
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
-          {/* Floating Glass Cards */}
+          {/* Glass Cards */}
           <div className="absolute bottom-6 left-6 right-6 grid grid-cols-1 md:grid-cols-2 gap-4">
 
             {/* Glass Card 1 */}
